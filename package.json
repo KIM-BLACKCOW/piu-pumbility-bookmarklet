@@ -1,0 +1,10 @@
+{
+  "name": "piu-pumbility-bookmarklet",
+  "version": "0.1.0",
+  "private": true,
+  "description": "펌프잇업 PHOENIX 2 펌빌리티 이미지 생성 북마클릿",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "check": "node --check src/bookmarklet.js && node --check scripts/build.mjs"
+  }
+}
