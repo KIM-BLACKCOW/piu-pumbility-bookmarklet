@@ -11,6 +11,7 @@
   const BEST_SCORE_PATH = "/my_page/my_best_score.php";
   const CARD_SELECTOR = ".rating_rangking_list_w.pumblitiySt .list2 > li";
   const FONT_FAMILY = 'Pretendard, "Noto Sans KR", "Malgun Gothic", sans-serif';
+  const RIGHTS_NOTICE = "비공식 팬 제작물 · PUMP IT UP 및 게임 내 이미지의 권리는 ANDAMIRO 및 각 권리자에게 있습니다.";
   const SCORE_GRADE_GUIDE = [
     ["F", 0],
     ["D", 500000],
@@ -530,6 +531,7 @@
     });
 
     drawUpgradeGuide(ctx, data, images, 320, 1282, 1360, 245);
+    drawRightsNotice(ctx, width, height);
     return canvas;
   }
 
@@ -826,6 +828,14 @@
     ctx.fillStyle = "#7885a2";
     ctx.font = `600 11px ${FONT_FAMILY}`;
     ctx.fillText("RG 기준 최소 점수", x + 22, y + height - 12);
+  }
+
+  function drawRightsNotice(ctx, width, height) {
+    ctx.fillStyle = "rgba(152,166,196,.48)";
+    ctx.font = `600 10px ${FONT_FAMILY}`;
+    ctx.textAlign = "right";
+    ctx.fillText(RIGHTS_NOTICE, width - 56, height - 22);
+    ctx.textAlign = "left";
   }
 
   function buildCombinedGuideRows(cutoff) {
