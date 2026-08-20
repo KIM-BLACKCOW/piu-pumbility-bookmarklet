@@ -504,7 +504,7 @@
 
   function renderPumbility(data, images) {
     const width = 2000;
-    const height = 1600;
+    const height = 4550;
     const canvas = document.createElement("canvas");
     canvas.width = width;
     canvas.height = height;
@@ -516,21 +516,33 @@
 
     ctx.fillStyle = "#f4f7ff";
     ctx.font = `800 25px ${FONT_FAMILY}`;
-    ctx.fillText(`PUMBILITY TOP ${data.cards.length}`, 56, 224);
+    ctx.fillText(`PUMBILITY TOP ${data.cards.length}`, 84, 224);
 
-    const columns = 10;
+    const columns = 5;
     const cardWidth = 178;
     const cardHeight = 188;
-    const gap = 12;
-    const startX = 56;
+    const cardScale = 1.95;
+    const gap = 24;
+    const startX = 84;
     const startY = 250;
     data.cards.slice(0, 50).forEach((card, index) => {
       const column = index % columns;
       const row = Math.floor(index / columns);
-      drawCard(ctx, card, images, startX + column * (cardWidth + gap), startY + row * (cardHeight + gap), cardWidth, cardHeight);
+      const cardX = startX + column * (cardWidth * cardScale + gap);
+      const cardY = startY + row * (cardHeight * cardScale + gap);
+      ctx.save();
+      ctx.translate(cardX, cardY);
+      ctx.scale(cardScale, cardScale);
+      drawCard(ctx, card, images, 0, 0, cardWidth, cardHeight);
+      ctx.restore();
     });
 
-    drawUpgradeGuide(ctx, data, images, 320, 1282, 1360, 245);
+    const guideScale = 1.3;
+    ctx.save();
+    ctx.translate(116, 4180);
+    ctx.scale(guideScale, guideScale);
+    drawUpgradeGuide(ctx, data, images, 0, 0, 1360, 245);
+    ctx.restore();
     drawRightsNotice(ctx, width, height);
     return canvas;
   }
