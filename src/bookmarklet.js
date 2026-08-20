@@ -761,8 +761,8 @@
     ctx.fillStyle = "#71809e";
     ctx.font = `700 10px ${FONT_FAMILY}`;
     ctx.fillText("추천 레벨", tableX + 8, headerY);
-    ctx.fillText("RG 최소 점수", tableX + 135, headerY);
-    ctx.fillText("랭크", tableX + 330, headerY);
+    ctx.fillText("RG 최소 점수", tableX + 105, headerY);
+    ctx.fillText("랭크", tableX + 315, headerY);
     ctx.textAlign = "right";
     ctx.fillText("예상", tableX + tableWidth - 10, headerY);
     ctx.textAlign = "left";
@@ -773,14 +773,20 @@
       ctx.fillStyle = index % 2 === 0 ? "rgba(130,151,202,.10)" : "rgba(130,151,202,.045)";
       ctx.fill();
       ctx.fillStyle = "#f3f6ff";
-      ctx.font = `800 12px ${FONT_FAMILY}`;
+      ctx.font = `800 11px ${FONT_FAMILY}`;
       ctx.fillText(row.levelLabel, tableX + 8, rowY + 17);
-      ctx.fillText(`${row.score.toLocaleString("ko-KR")}점 이상`, tableX + 135, rowY + 17);
+      const scoreText = formatGuideModeValues(row.single, row.double, (requirement) => (
+        requirement.score.toLocaleString("ko-KR")
+      ));
+      ctx.fillText(scoreText, tableX + 105, rowY + 17);
       ctx.fillStyle = "#b9c6df";
-      ctx.fillText(row.grade, tableX + 330, rowY + 17);
+      ctx.fillText(row.grade, tableX + 315, rowY + 17);
       ctx.fillStyle = "#86d9ff";
+      const pumbilityText = formatGuideModeValues(row.single, row.double, (requirement) => (
+        requirement.pumbility.toFixed(2)
+      ));
       ctx.textAlign = "right";
-      ctx.fillText(row.pumbility.toFixed(2), tableX + tableWidth - 10, rowY + 17);
+      ctx.fillText(pumbilityText, tableX + tableWidth - 10, rowY + 17);
       ctx.textAlign = "left";
     });
 
@@ -842,41 +848,71 @@
     for (let skillLevel = startingLevel; skillLevel <= 28 && rows.length < 5; skillLevel += 1) {
       if (skillLevel >= 27) {
         const doubleLevel = skillLevel + 1;
-        const requirement = SCORE_GRADE_GUIDE.find(([grade]) => (
-          calculatePumbility("D", doubleLevel, grade, roughPlate) > cutoff
-        ));
-        if (!requirement) {
+        const double = buildGuideRequirement("D", doubleLevel, cutoff, roughPlate);
+        if (!double) {
           continue;
         }
         rows.push({
           skillLevel,
           levelLabel: `D${doubleLevel}`,
-          grade: requirement[0],
-          score: requirement[1],
-          pumbility: calculatePumbility("D", doubleLevel, requirement[0], roughPlate),
+          single: null,
+          double,
+          grade: double.grade,
+          pumbility: double.pumbility,
         });
         continue;
       }
 
-      const requirement = SCORE_GRADE_GUIDE.find(([grade]) => {
-        const singleValue = calculatePumbility("S", skillLevel, grade, roughPlate);
-        const doubleValue = calculatePumbility("D", skillLevel + 1, grade, roughPlate);
-        return singleValue > cutoff && doubleValue > cutoff;
-      });
-      if (!requirement) {
+      const single = buildGuideRequirement("S", skillLevel, cutoff, roughPlate);
+      const double = buildGuideRequirement("D", skillLevel + 1, cutoff, roughPlate);
+      if (!single && !double) {
         continue;
       }
-      const singleValue = calculatePumbility("S", skillLevel, requirement[0], roughPlate);
-      const doubleValue = calculatePumbility("D", skillLevel + 1, requirement[0], roughPlate);
+      const stricter = !single ? double : !double ? single : single.score >= double.score ? single : double;
+      const strictValues = [
+        single ? calculatePumbility("S", skillLevel, stricter.grade, roughPlate) : NaN,
+        double ? calculatePumbility("D", skillLevel + 1, stricter.grade, roughPlate) : NaN,
+      ].filter(Number.isFinite);
       rows.push({
         skillLevel,
         levelLabel: `S${skillLevel} · D${skillLevel + 1}`,
-        grade: requirement[0],
-        score: requirement[1],
-        pumbility: Math.min(singleValue, doubleValue),
+        single,
+        double,
+        grade: stricter.grade,
+        pumbility: Math.min(...strictValues),
       });
     }
     return rows;
+  }
+
+  function buildGuideRequirement(mode, level, cutoff, plate) {
+    const requirement = SCORE_GRADE_GUIDE.find(([grade]) => (
+      calculatePumbility(mode, level, grade, plate) > cutoff
+    ));
+    if (!requirement) {
+      return null;
+    }
+    return {
+      levelLabel: `${mode}${level}`,
+      grade: requirement[0],
+      score: requirement[1],
+      pumbility: calculatePumbility(mode, level, requirement[0], plate),
+    };
+  }
+
+  function formatGuideModeValues(single, double, formatter) {
+    if (single && double) {
+      const singleValue = formatter(single);
+      const doubleValue = formatter(double);
+      return singleValue === doubleValue ? singleValue : `S ${singleValue} · D ${doubleValue}`;
+    }
+    if (single) {
+      return `S ${formatter(single)}`;
+    }
+    if (double) {
+      return `D ${formatter(double)}`;
+    }
+    return "-";
   }
 
   function buildPlateBonuses(skillLevel) {
