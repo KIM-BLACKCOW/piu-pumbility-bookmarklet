@@ -504,7 +504,7 @@
 
   function renderPumbility(data, images) {
     const width = 2000;
-    const height = 4550;
+    const height = 4320;
     const canvas = document.createElement("canvas");
     canvas.width = width;
     canvas.height = height;
@@ -516,15 +516,15 @@
 
     ctx.fillStyle = "#f4f7ff";
     ctx.font = `800 25px ${FONT_FAMILY}`;
-    ctx.fillText(`PUMBILITY TOP ${data.cards.length}`, 84, 224);
+    ctx.fillText(`PUMBILITY TOP ${data.cards.length}`, 84, 240);
 
     const columns = 5;
     const cardWidth = 178;
-    const cardHeight = 188;
+    const cardHeight = 176;
     const cardScale = 1.95;
     const gap = 24;
     const startX = 84;
-    const startY = 250;
+    const startY = 260;
     data.cards.slice(0, 50).forEach((card, index) => {
       const column = index % columns;
       const row = Math.floor(index / columns);
@@ -539,7 +539,7 @@
 
     const guideScale = 1.3;
     ctx.save();
-    ctx.translate(116, 4180);
+    ctx.translate(116, 3955);
     ctx.scale(guideScale, guideScale);
     drawUpgradeGuide(ctx, data, images, 0, 0, 1360, 245);
     ctx.restore();
@@ -584,8 +584,8 @@
   }
 
   function drawHeader(ctx, data, images, width) {
-    roundedPath(ctx, 40, 34, width - 80, 148, 24);
-    const panel = ctx.createLinearGradient(40, 34, width - 40, 182);
+    roundedPath(ctx, 40, 28, width - 80, 166, 24);
+    const panel = ctx.createLinearGradient(40, 28, width - 40, 194);
     panel.addColorStop(0, "rgba(24,37,64,.96)");
     panel.addColorStop(1, "rgba(28,24,55,.94)");
     ctx.fillStyle = panel;
@@ -595,19 +595,19 @@
 
     const logo = images.get(data.logoUrl);
     if (logo) {
-      drawContain(ctx, logo, 62, 58, 218, 92);
+      drawContain(ctx, logo, 62, 46, 240, 120);
     } else {
       ctx.fillStyle = "#ffffff";
-      ctx.font = `900 25px ${FONT_FAMILY}`;
-      ctx.fillText("PUMP IT UP", 68, 112);
+      ctx.font = `900 34px ${FONT_FAMILY}`;
+      ctx.fillText("PUMP IT UP", 68, 124);
     }
 
     ctx.fillStyle = "#8ea0c7";
-    ctx.font = `700 14px ${FONT_FAMILY}`;
-    ctx.fillText(data.profileTitle || "PLAYER", 318, 76);
+    ctx.font = `700 20px ${FONT_FAMILY}`;
+    drawFittedText(ctx, data.profileTitle || "PLAYER", 336, 69, 820);
     ctx.fillStyle = "#f7f9ff";
-    ctx.font = `900 35px ${FONT_FAMILY}`;
-    drawFittedText(ctx, data.nickname || "PLAYER", 318, 119, 650);
+    ctx.font = `900 46px ${FONT_FAMILY}`;
+    drawFittedText(ctx, data.nickname || "PLAYER", 336, 121, 820);
     const generatedDateTime = new Intl.DateTimeFormat("ko-KR", {
       year: "numeric",
       month: "2-digit",
@@ -617,29 +617,29 @@
       second: "2-digit",
     }).format(data.generatedAt);
     ctx.fillStyle = "#7f8baa";
-    ctx.font = `600 14px ${FONT_FAMILY}`;
-    ctx.fillText(`생성 일시 · ${generatedDateTime}`, 320, 148);
+    ctx.font = `600 19px ${FONT_FAMILY}`;
+    ctx.fillText(`생성 일시 · ${generatedDateTime}`, 338, 159);
 
     const icon = images.get(data.tierIconUrl);
     if (icon) {
-      drawContain(ctx, icon, 1398, 50, 112, 112);
+      drawContain(ctx, icon, 1378, 44, 130, 130);
     }
     ctx.fillStyle = "#98a6c4";
-    ctx.font = `700 15px ${FONT_FAMILY}`;
-    ctx.fillText(data.tier || "PUMBILITY", 1534, 75);
+    ctx.font = `700 22px ${FONT_FAMILY}`;
+    ctx.fillText(data.tier || "PUMBILITY", 1530, 76);
     const scoreTheme = getPumbilityColorTheme(data.totalScore);
-    const scoreGradient = ctx.createLinearGradient(1534, 86, 1930, 146);
+    const scoreGradient = ctx.createLinearGradient(1530, 84, 1930, 154);
     scoreTheme.colors.forEach((color, index) => {
       scoreGradient.addColorStop(index / (scoreTheme.colors.length - 1), color);
     });
     ctx.fillStyle = scoreGradient;
-    ctx.font = `900 55px ${FONT_FAMILY}`;
+    ctx.font = `900 70px ${FONT_FAMILY}`;
     if (scoreTheme.stroke) {
       ctx.strokeStyle = scoreTheme.stroke;
-      ctx.lineWidth = 2.5;
-      ctx.strokeText(data.totalScore || "0", 1530, 134);
+      ctx.lineWidth = 3;
+      ctx.strokeText(data.totalScore || "0", 1530, 146);
     }
-    ctx.fillText(data.totalScore || "0", 1530, 134);
+    ctx.fillText(data.totalScore || "0", 1530, 146);
   }
 
   function getPumbilityColorTheme(totalScore) {
@@ -699,34 +699,31 @@
     ctx.textAlign = "left";
 
     ctx.fillStyle = "#f4f6ff";
-    ctx.font = `800 13px ${FONT_FAMILY}`;
-    drawFittedText(ctx, card.songTitle || "-", x + 10, y + 133, width - 20);
-    ctx.fillStyle = "#8f9ab5";
-    ctx.font = `600 10px ${FONT_FAMILY}`;
-    drawFittedText(ctx, card.artist || "", x + 10, y + 150, width - 20);
+    ctx.font = `800 16px ${FONT_FAMILY}`;
+    drawFittedText(ctx, card.songTitle || "-", x + 10, y + 136, width - 20);
 
     ctx.strokeStyle = "rgba(255,255,255,.08)";
     ctx.beginPath();
-    ctx.moveTo(x + 9, y + 158);
-    ctx.lineTo(x + width - 9, y + 158);
+    ctx.moveTo(x + 9, y + 145);
+    ctx.lineTo(x + width - 9, y + 145);
     ctx.stroke();
 
     const gradeImage = images.get(card.gradeUrl);
     if (gradeImage) {
-      drawContain(ctx, gradeImage, x + 9, y + 163, 34, 22);
+      drawContain(ctx, gradeImage, x + 9, y + 149, 34, 22);
     } else {
-      drawBadge(ctx, card.grade, x + 9, y + 165, "#25304a", "#d9e2f7", 34, 10);
+      drawBadge(ctx, card.grade, x + 9, y + 150, "#25304a", "#d9e2f7", 34, 10);
     }
     const plateImage = images.get(card.plateUrl);
     if (plateImage) {
-      drawContain(ctx, plateImage, x + 49, y + 163, 42, 22);
+      drawContain(ctx, plateImage, x + 49, y + 149, 42, 22);
     } else {
-      drawBadge(ctx, card.plate, x + 49, y + 165, "#b5bfd2", "#0c1020", 34, 10);
+      drawBadge(ctx, card.plate, x + 49, y + 150, "#b5bfd2", "#0c1020", 34, 10);
     }
     ctx.fillStyle = "#86d9ff";
     ctx.font = `900 14px ${FONT_FAMILY}`;
     ctx.textAlign = "right";
-    ctx.fillText(card.point || "-", x + width - 9, y + 180);
+    ctx.fillText(card.point || "-", x + width - 9, y + 168);
     ctx.textAlign = "left";
   }
 
@@ -759,87 +756,87 @@
     drawPanel(ctx, x, y, width, height);
 
     ctx.fillStyle = "#eef3ff";
-    ctx.font = `800 18px ${FONT_FAMILY}`;
-    ctx.fillText("TOP 50 갱신 가이드", x + 22, y + 31);
+    ctx.font = `800 24px ${FONT_FAMILY}`;
+    ctx.fillText("TOP 50 갱신 가이드", x + 22, y + 38);
     ctx.fillStyle = "#86d9ff";
-    ctx.font = `800 14px ${FONT_FAMILY}`;
+    ctx.font = `800 18px ${FONT_FAMILY}`;
     ctx.textAlign = "right";
-    ctx.fillText(`현재 최저 ${cutoff.toFixed(2)} 초과 기준`, x + width - 22, y + 31);
+    ctx.fillText(`현재 최저 ${cutoff.toFixed(2)} 초과 기준`, x + width - 22, y + 38);
     ctx.textAlign = "left";
 
     const tableX = x + 22;
-    const tableWidth = 560;
+    const tableWidth = 650;
     const bonusX = tableX + tableWidth + 24;
     const bonusWidth = width - tableWidth - 68;
-    const headerY = y + 58;
+    const headerY = y + 67;
     ctx.fillStyle = "#71809e";
-    ctx.font = `700 10px ${FONT_FAMILY}`;
+    ctx.font = `700 14px ${FONT_FAMILY}`;
     ctx.fillText("추천 레벨", tableX + 8, headerY);
-    ctx.fillText("RG 최소 점수", tableX + 105, headerY);
-    ctx.fillText("랭크", tableX + 315, headerY);
+    ctx.fillText("RG 최소 점수", tableX + 135, headerY);
+    ctx.fillText("랭크", tableX + 405, headerY);
     ctx.textAlign = "right";
-    ctx.fillText("예상", tableX + tableWidth - 10, headerY);
+    ctx.fillText("예상 펌빌리티", tableX + tableWidth - 10, headerY);
     ctx.textAlign = "left";
 
     rows.forEach((row, index) => {
-      const rowY = y + 67 + index * 28;
-      roundedPath(ctx, tableX, rowY, tableWidth, 24, 7);
+      const rowY = y + 76 + index * 30;
+      roundedPath(ctx, tableX, rowY, tableWidth, 26, 7);
       ctx.fillStyle = index % 2 === 0 ? "rgba(130,151,202,.10)" : "rgba(130,151,202,.045)";
       ctx.fill();
       ctx.fillStyle = "#f3f6ff";
-      ctx.font = `800 11px ${FONT_FAMILY}`;
-      ctx.fillText(row.levelLabel, tableX + 8, rowY + 17);
+      ctx.font = `800 15px ${FONT_FAMILY}`;
+      ctx.fillText(row.levelLabel, tableX + 8, rowY + 19);
       const scoreText = formatGuideModeValues(row.single, row.double, (requirement) => (
         requirement.score.toLocaleString("ko-KR")
       ));
-      ctx.fillText(scoreText, tableX + 105, rowY + 17);
+      ctx.fillText(scoreText, tableX + 135, rowY + 19);
       ctx.fillStyle = "#b9c6df";
-      ctx.fillText(row.grade, tableX + 315, rowY + 17);
+      ctx.fillText(row.grade, tableX + 405, rowY + 19);
       ctx.fillStyle = "#86d9ff";
       const pumbilityText = formatGuideModeValues(row.single, row.double, (requirement) => (
         requirement.pumbility.toFixed(2)
       ));
       ctx.textAlign = "right";
-      ctx.fillText(pumbilityText, tableX + tableWidth - 10, rowY + 17);
+      ctx.fillText(pumbilityText, tableX + tableWidth - 10, rowY + 19);
       ctx.textAlign = "left";
     });
 
     ctx.fillStyle = "#dce5f8";
-    ctx.font = `800 12px ${FONT_FAMILY}`;
+    ctx.font = `800 16px ${FONT_FAMILY}`;
     ctx.fillText(`플레이트 보너스 · ${rows[0]?.levelLabel || "-"} 기준`, bonusX, headerY);
-    const bonusColumnWidth = (bonusWidth - 30) / 4;
+    const bonusColumnWidth = (bonusWidth - 12) / 2;
     plateBonuses.forEach((bonus, index) => {
-      const column = index % 4;
-      const row = Math.floor(index / 4);
-      const chipX = bonusX + column * (bonusColumnWidth + 10);
-      const chipY = y + 69 + row * 40;
-      roundedPath(ctx, chipX, chipY, bonusColumnWidth, 32, 8);
+      const column = index % 2;
+      const row = Math.floor(index / 2);
+      const chipX = bonusX + column * (bonusColumnWidth + 12);
+      const chipY = y + 76 + row * 38;
+      roundedPath(ctx, chipX, chipY, bonusColumnWidth, 34, 8);
       ctx.fillStyle = "rgba(130,151,202,.08)";
       ctx.fill();
       const plateImage = images.get(absoluteUrl(bonus.plate.path));
       if (plateImage) {
-        drawContain(ctx, plateImage, chipX + 7, chipY + 4, 56, 24);
+        drawContain(ctx, plateImage, chipX + 8, chipY + 4, 70, 26);
       } else {
         ctx.fillStyle = "#dce5f8";
-        ctx.font = `900 12px ${FONT_FAMILY}`;
-        ctx.fillText(bonus.plate.code, chipX + 12, chipY + 21);
+        ctx.font = `900 15px ${FONT_FAMILY}`;
+        ctx.fillText(bonus.plate.code, chipX + 14, chipY + 23);
       }
       ctx.fillStyle = "#86d9ff";
       ctx.textAlign = "right";
       if (bonus.plate.code === "UG" || bonus.plate.code === "EG") {
-        ctx.font = `900 11px ${FONT_FAMILY}`;
-        ctx.fillText(`S +${bonus.single.toFixed(2)}`, chipX + bonusColumnWidth - 9, chipY + 13);
-        ctx.fillText(`D +${bonus.double.toFixed(2)}`, chipX + bonusColumnWidth - 9, chipY + 25);
+        ctx.font = `900 13px ${FONT_FAMILY}`;
+        ctx.fillText(`S +${bonus.single.toFixed(2)}`, chipX + bonusColumnWidth - 10, chipY + 14);
+        ctx.fillText(`D +${bonus.double.toFixed(2)}`, chipX + bonusColumnWidth - 10, chipY + 29);
       } else {
-        ctx.font = `900 14px ${FONT_FAMILY}`;
-        ctx.fillText(`+${bonus.single.toFixed(2)}`, chipX + bonusColumnWidth - 9, chipY + 21);
+        ctx.font = `900 17px ${FONT_FAMILY}`;
+        ctx.fillText(`+${bonus.single.toFixed(2)}`, chipX + bonusColumnWidth - 10, chipY + 23);
       }
       ctx.textAlign = "left";
     });
 
     ctx.fillStyle = "#7885a2";
-    ctx.font = `600 11px ${FONT_FAMILY}`;
-    ctx.fillText("RG 기준 최소 점수", x + 22, y + height - 12);
+    ctx.font = `600 14px ${FONT_FAMILY}`;
+    ctx.fillText("RG 기준 최소 점수", x + 22, y + height - 8);
   }
 
   function drawRightsNotice(ctx, width, height) {
