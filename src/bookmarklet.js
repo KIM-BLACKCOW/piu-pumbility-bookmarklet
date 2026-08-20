@@ -140,21 +140,22 @@
         :host{all:initial}
         *,*::before,*::after{box-sizing:border-box}
         .backdrop{position:fixed;inset:0;background:rgba(5,8,18,.86);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:28px;font-family:${FONT_FAMILY};color:#eef3ff}
-        .panel{position:relative;width:min(1240px,96vw);max-height:94vh;overflow:auto;border:1px solid rgba(129,166,255,.28);border-radius:22px;background:linear-gradient(145deg,#161d31,#0e1424);box-shadow:0 28px 90px rgba(0,0,0,.55);padding:24px}
-        .header{display:flex;align-items:center;justify-content:space-between;gap:20px;margin-bottom:18px}
+        .panel{position:relative;display:flex;flex-direction:column;width:min(1240px,96vw);max-height:94vh;max-height:94dvh;overflow:hidden;border:1px solid rgba(129,166,255,.28);border-radius:22px;background:linear-gradient(145deg,#161d31,#0e1424);box-shadow:0 28px 90px rgba(0,0,0,.55);padding:24px}
+        .panel.has-preview{height:94vh;height:94dvh}
+        .header{display:flex;flex:none;align-items:center;justify-content:space-between;gap:20px;margin-bottom:18px}
         .title{font-size:20px;font-weight:800;letter-spacing:-.02em}
         .close{width:38px;height:38px;border:0;border-radius:12px;background:rgba(255,255,255,.08);color:#fff;font-size:24px;line-height:1;cursor:pointer}
         .close:hover{background:rgba(255,255,255,.15)}
-        .status{min-height:240px;display:flex;align-items:center;justify-content:center;text-align:center;font-size:17px;color:#c9d6f3}
-        .preview{display:none;gap:18px;flex-direction:column}
-        .canvas-wrap{overflow:auto;border-radius:14px;background:#080c16;border:1px solid rgba(255,255,255,.09)}
+        .status{min-height:240px;display:flex;align-items:center;justify-content:center;overflow:auto;text-align:center;font-size:17px;color:#c9d6f3}
+        .preview{display:none;min-height:0;flex:1;gap:14px;flex-direction:column;overflow:hidden}
+        .canvas-wrap{min-height:0;flex:1;overflow:auto;overscroll-behavior:contain;scrollbar-gutter:stable;border-radius:14px;background:#080c16;border:1px solid rgba(255,255,255,.09)}
         canvas{display:block;width:100%;height:auto}
-        .actions{display:flex;justify-content:flex-end;gap:10px;position:sticky;bottom:0;padding-top:14px;background:linear-gradient(transparent,#0e1424 28%)}
+        .actions{display:flex;flex:none;justify-content:flex-end;gap:10px}
         button.action{border:0;border-radius:12px;padding:12px 18px;font:700 15px ${FONT_FAMILY};cursor:pointer}
         .secondary{background:rgba(255,255,255,.1);color:#f4f7ff}
         .primary{background:linear-gradient(135deg,#4a82ff,#885dff);color:white;box-shadow:0 8px 24px rgba(74,130,255,.28)}
         .error{color:#ffb9c3;line-height:1.7;white-space:pre-wrap}
-        @media(max-width:680px){.backdrop{padding:10px}.panel{padding:16px;border-radius:16px}.title{font-size:17px}}
+        @media(max-width:680px){.backdrop{padding:10px}.panel{padding:16px;border-radius:16px}.panel.has-preview{height:calc(100vh - 20px);height:calc(100dvh - 20px)}.title{font-size:17px}}
       </style>
       <div class="backdrop" role="dialog" aria-modal="true" aria-label="펌빌리티 이미지 생성기">
         <section class="panel">
@@ -176,6 +177,7 @@
     document.documentElement.append(host);
 
     const status = shadow.querySelector(".status");
+    const panel = shadow.querySelector(".panel");
     const preview = shadow.querySelector(".preview");
     const canvasWrap = shadow.querySelector(".canvas-wrap");
     const closeButtons = [shadow.querySelector(".close"), shadow.querySelector(".close-action")];
@@ -202,12 +204,14 @@
         status.textContent = message;
       },
       showError(message) {
+        panel.classList.remove("has-preview");
         preview.style.display = "none";
         status.style.display = "flex";
         status.classList.add("error");
         status.textContent = message;
       },
       showPreview(canvas, blob, fileName) {
+        panel.classList.add("has-preview");
         status.style.display = "none";
         preview.style.display = "flex";
         canvasWrap.replaceChildren(canvas);
@@ -559,13 +563,13 @@
     glowA.addColorStop(0, "rgba(99,95,255,.30)");
     glowA.addColorStop(1, "rgba(99,95,255,0)");
     ctx.fillStyle = glowA;
-    ctx.fillRect(900, 0, 1100, 900);
+    ctx.fillRect(0, 0, width, height);
 
     const glowB = ctx.createRadialGradient(140, 1240, 0, 140, 1240, 620);
     glowB.addColorStop(0, "rgba(32,177,190,.16)");
     glowB.addColorStop(1, "rgba(32,177,190,0)");
     ctx.fillStyle = glowB;
-    ctx.fillRect(0, 700, 900, 900);
+    ctx.fillRect(0, 0, width, height);
 
     ctx.strokeStyle = "rgba(132,153,201,.055)";
     ctx.lineWidth = 1;
